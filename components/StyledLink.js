@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { border, color, layout, space, typography } from 'styled-system';
 import themeGet from '@styled-system/theme-get';
+import { get } from 'lodash';
 import { whiteSpace, textDecoration } from '../lib/styled_system_custom';
 import { buttonSize, buttonStyle } from '../lib/theme';
 
@@ -15,7 +16,7 @@ const StyledLink = styled.a`
   cursor: pointer;
 
   &:hover {
-    color: ${themeGet('colors.primary.300')};
+    color: ${props => get(props.theme.colors, props['data-hovercolor'])};
   }
 
   ${border}
@@ -76,6 +77,7 @@ StyledLink.propTypes = {
    * See lib/theme/colors.js for the list of theme colors
    */
   color: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array]),
+  'data-hovercolor': PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array]),
   /** styled-system prop: accepts any css 'display' value */
   display: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array]),
   /** styled-system prop: accepts any css 'font-size' value */
@@ -96,6 +98,10 @@ StyledLink.propTypes = {
   disabled: PropTypes.bool,
   /** Wether text should be truncated if too long */
   truncateOverflow: PropTypes.bool,
+};
+
+StyledLink.defaultProps = {
+  'data-hovercolor': 'primary.300',
 };
 
 /** @component */

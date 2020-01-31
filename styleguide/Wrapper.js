@@ -11,6 +11,10 @@ import { getBaseApiUrl } from '../lib/utils';
 
 const STRIPE_KEY = 'pk_test_VgSB4VSg2wb5LdAkz7p38Gw8';
 
+// Helper to track re-renders
+// const whyDidYouRender = require('@welldone-software/why-did-you-render');
+// whyDidYouRender(React, { trackAllPureComponents: true });
+
 export default class ThemeWrapper extends Component {
   static propTypes = {
     children: PropTypes.node,

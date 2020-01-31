@@ -7,8 +7,12 @@ import themeGet from '@styled-system/theme-get';
 import { overflow, resize } from '../lib/styled_system_custom';
 import Container from './Container';
 import StyledTag from './StyledTag';
+import { combineRefs } from '../lib/react-utils';
 
 const TextArea = styled.textarea`
+  font-family: 'Inter';
+  outline: none;
+
   /** Size */
   ${space}
   ${layout}
@@ -21,8 +25,6 @@ const TextArea = styled.textarea`
   /** Text */
   ${color}
   ${typography}
-
-  outline: none;
 
   ${props => {
     if (props.withOutline) {
@@ -37,6 +39,10 @@ const TextArea = styled.textarea`
               outline-offset: 0.25em;
             }
           `;
+    } else if (props.error) {
+      return css`
+        border-color: ${props.theme.colors.red[500]};
+      `;
     }
   }}
 
@@ -60,6 +66,7 @@ const TextArea = styled.textarea`
 export default class StyledTextarea extends React.PureComponent {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    inputRef: PropTypes.func,
     /** If true, the component will update its size based on its content */
     autoSize: PropTypes.bool,
     /** styled-system prop: accepts any css 'border' value */
@@ -86,8 +93,8 @@ export default class StyledTextarea extends React.PureComponent {
     border: '1px solid',
     borderColor: 'black.300',
     borderRadius: '4px',
-    px: 3,
-    py: 2,
+    px: 12,
+    py: 12,
   };
 
   constructor(props) {
@@ -108,22 +115,29 @@ export default class StyledTextarea extends React.PureComponent {
     target.style.height = `${target.scrollHeight}px`;
   }
 
+  onChange = e => {
+    const { onChange, autoSize } = this.props;
+
+    if (onChange) {
+      onChange(e);
+    }
+
+    if (autoSize) {
+      this._adjustHeight(e.target);
+    }
+  };
+
   render() {
-    const { onChange, autoSize, showCount, resize, ...props } = this.props;
+    const { autoSize, showCount, resize, inputRef, ...props } = this.props;
     const value = props.value || props.defaultValue || '';
 
     const textarea = (
       <TextArea
-        ref={this.textareaRef}
+        ref={combineRefs(this.textareaRef, inputRef)}
         as="textarea"
-        onChange={e => {
-          onChange(e);
-          if (this.props.autoSize) {
-            this._adjustHeight(e.target);
-          }
-        }}
         resize={resize || (autoSize ? 'none' : 'vertical')}
         {...props}
+        onChange={this.onChange}
       />
     );
 
